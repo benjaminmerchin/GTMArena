@@ -30,11 +30,11 @@ export default function RacePage() {
     cells.find((c: any) => c.leadId === leadId && c.toolId === toolId);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
+    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10 lg:py-12">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <div className="text-sm font-medium text-accent">Race · live grader</div>
-          <h1 className="mt-1 font-display text-4xl text-ink">Enrichment Arena</h1>
+          <h1 className="mt-1 font-display text-4xl text-white">Enrichment Arena</h1>
           <p className="mt-2 max-w-2xl text-ink/55">
             Drop a lead list → providers fill columns live → an objective grader
             scores email validity, coverage &amp; cost-per-valid.
@@ -66,7 +66,7 @@ export default function RacePage() {
                   {p.filled}/{p.total}
                 </span>
               </div>
-              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#EEF1F6]">
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
@@ -118,7 +118,7 @@ export default function RacePage() {
                     return (
                       <td key={p.toolId} className="px-4 py-3 align-top">
                         {!c || c.status === "pending" ? (
-                          <span className="text-ink/25">·</span>
+                          <span className="text-ink/20">·</span>
                         ) : c.status === "running" ? (
                           <span className="inline-block h-3 w-3 animate-pulse rounded-full bg-c2" />
                         ) : (

@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter, Instrument_Serif } from "next/font/google";
 import { Providers } from "./providers";
 import { Sidebar } from "@/components/Sidebar";
-import { Topbar } from "@/components/Topbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const serif = Instrument_Serif({
@@ -22,14 +21,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${serif.variable}`}>
-      <body className="min-h-screen bg-white font-sans text-ink antialiased">
+      <body className="min-h-screen bg-bg font-sans text-ink antialiased">
         <Providers>
           <div className="flex min-h-screen">
             <Sidebar />
-            <div className="flex min-w-0 flex-1 flex-col">
-              <Topbar />
-              <main className="flex-1">{children}</main>
-            </div>
+            <main className="min-w-0 flex-1">{children}</main>
           </div>
         </Providers>
       </body>

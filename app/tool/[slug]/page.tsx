@@ -20,17 +20,17 @@ export default function ToolProfile() {
   const { tool, badges } = data;
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
+    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10 lg:py-12">
       <Link href="/" className="text-sm font-medium text-accent hover:underline">
         ← Hub
       </Link>
 
       <div className="mt-5 flex items-start gap-5">
-        <span className="grid h-16 w-16 place-items-center rounded-2xl border border-line bg-[#F6F8FB] text-lg font-semibold text-ink/75">
+        <span className="grid h-16 w-16 place-items-center rounded-2xl border border-line bg-white/[0.05] text-lg font-semibold text-ink/80">
           {tool.logoText}
         </span>
         <div>
-          <h1 className="font-display text-4xl text-ink">{tool.name}</h1>
+          <h1 className="font-display text-4xl text-white">{tool.name}</h1>
           <p className="mt-1.5 text-ink/55">{tool.blurb}</p>
           <div className="mt-3.5 flex flex-wrap items-center gap-2 text-xs">
             <Tag>{tool.pricingModel}</Tag>
@@ -62,7 +62,7 @@ export default function ToolProfile() {
           <Link key={b.category} href={`/c/${b.category}`} className="surface surface-hover p-5">
             <div className="flex items-center justify-between">
               <span className="font-medium text-ink">{b.categoryName}</span>
-              <span className="rounded-full bg-accent/10 px-2.5 py-1 text-sm font-semibold text-accent">
+              <span className="rounded-full bg-accent/15 px-2.5 py-1 text-sm font-semibold text-accent">
                 #{b.rank}
                 <span className="font-normal text-ink/35"> / {b.of}</span>
               </span>
@@ -82,7 +82,7 @@ export default function ToolProfile() {
 
 const Tag = ({ children, accent }: { children: React.ReactNode; accent?: boolean }) => (
   <span
-    className={`rounded-full border border-line px-2.5 py-1 ${accent ? "bg-c1/10 text-c1" : "bg-white text-ink/60"}`}
+    className={`rounded-full border border-line px-2.5 py-1 ${accent ? "bg-c1/15 text-c1" : "bg-white/[0.04] text-ink/60"}`}
   >
     {children}
   </span>

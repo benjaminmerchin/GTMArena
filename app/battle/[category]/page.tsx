@@ -72,7 +72,7 @@ export default function BattlePage() {
   const winnerName = reveal?.reveal.find((r: any) => r.label === reveal.result)?.name;
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
+    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10 lg:py-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <Link
@@ -81,7 +81,7 @@ export default function BattlePage() {
           >
             ← {category.replace("-", " ")} leaderboard
           </Link>
-          <h1 className="mt-1 font-display text-4xl capitalize text-ink">
+          <h1 className="mt-1 font-display text-4xl capitalize text-white">
             {category.replace("-", " ")} battle
           </h1>
         </div>
@@ -96,7 +96,7 @@ export default function BattlePage() {
           <div className="text-[11px] font-semibold uppercase tracking-wide text-ink/40">
             Shared task
           </div>
-          <p className="mt-1.5 text-[15px] text-ink/80">{battle.task}</p>
+          <p className="mt-1.5 text-[15px] text-ink/85">{battle.task}</p>
         </div>
       )}
 
@@ -107,17 +107,17 @@ export default function BattlePage() {
           return (
             <div
               key={c.label}
-              className={cn("surface flex flex-col p-5 transition")}
+              className="surface flex flex-col p-5 transition"
               style={{
                 borderColor: reveal ? CONTESTANT[i] : undefined,
-                boxShadow: won ? "0 0 0 2px #2F6FED, 0 16px 40px -16px #2f6fed55" : undefined,
+                boxShadow: won ? "0 0 0 1.5px #6AA0FF, 0 16px 40px -16px #2f6fed66" : undefined,
               }}
             >
               <div className="mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-2.5 text-sm font-semibold">
                   <span
-                    className="grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold text-white"
-                    style={{ background: reveal ? CONTESTANT[i] : "#0B1F3A" }}
+                    className="grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold text-[#0A0F1C]"
+                    style={{ background: reveal ? CONTESTANT[i] : "rgba(255,255,255,0.16)" }}
                   >
                     {c.label}
                   </span>
@@ -129,7 +129,7 @@ export default function BattlePage() {
                     <span className="text-ink/55">Anonymous</span>
                   )}
                   {won && (
-                    <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent">
+                    <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold text-accent">
                       WINNER
                     </span>
                   )}
@@ -187,7 +187,7 @@ function VoteBtn({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink transition hover:border-navy hover:bg-[#F6F8FB] disabled:opacity-50"
+      className="rounded-xl border border-line bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-ink transition hover:border-accent hover:bg-white/[0.07] disabled:opacity-50"
     >
       {children}
     </button>
