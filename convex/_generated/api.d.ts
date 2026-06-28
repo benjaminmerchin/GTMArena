@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as arena from "../arena.js";
 import type * as battles from "../battles.js";
 import type * as categories from "../categories.js";
 import type * as email from "../email.js";
@@ -36,6 +37,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  arena: typeof arena;
   battles: typeof battles;
   categories: typeof categories;
   email: typeof email;

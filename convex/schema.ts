@@ -324,4 +324,19 @@ export default defineSchema({
     linkedin: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_key", ["key"]),
+
+  // Every blind wiki-comparison battle, judged by a rotating panel of models.
+  // This is what builds the (unbiased) Elo — and the visible battle history.
+  judgedBattles: defineTable({
+    category: v.string(),
+    aId: v.id("tools"),
+    bId: v.id("tools"),
+    aName: v.string(),
+    bName: v.string(),
+    winner: v.union(v.literal("A"), v.literal("B"), v.literal("tie")),
+    winnerName: v.optional(v.string()),
+    model: v.string(),
+    reason: v.string(),
+    createdAt: v.number(),
+  }).index("by_category", ["category"]),
 });

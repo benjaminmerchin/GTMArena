@@ -68,3 +68,39 @@ export async function webSearchJSON(
     return null;
   }
 }
+
+// TokenRouter — one OpenAI-compatible endpoint for many providers' models.
+// Used to judge battles with a rotation of cheap models. Parses JSON from the
+// reply text (no response_format/temperature, for cross-model robustness).
+export async function tokenRouterJSON(
+  model: string,
+  system: string,
+  user: string,
+): Promise<any | null> {
+  const key = process.env.TOKENROUTER_API_KEY;
+  if (!key) return null;
+  try {
+    const res = await fetch("https://api.tokenrouter.com/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      console.error(`[tokenrouter] ${model} ${res.status}: ${await res.text()}`);
+      return null;
+    }
+    const data: any = await res.json();
+    const text: string = data?.choices?.[0]?.message?.content ?? "";
+    const m = text.match(/\{[\s\S]*\}/);
+    return m ? JSON.parse(m[0]) : null;
+  } catch (e) {
+    console.error("[tokenrouter]", e);
+    return null;
+  }
+}
