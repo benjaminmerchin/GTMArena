@@ -138,22 +138,52 @@ export const runBattle = internalAction({
   },
 });
 
-// Schedule N battles, rotating categories AND models round-robin.
+// Schedule N battles, rotating models round-robin. By default the count is
+// distributed across categories WEIGHTED by their number of matchups (pairs),
+// so a 13-tool category gets far more battles than a 4-tool one (even per-pair
+// convergence). Pass {even:true} for equal-per-category, or {category} for one.
 //   convex run arena:runBattles '{"count":1000}'
 export const runBattles = action({
-  args: { count: v.optional(v.number()), category: v.optional(v.string()) },
-  handler: async (ctx, { count, category }) => {
+  args: {
+    count: v.optional(v.number()),
+    category: v.optional(v.string()),
+    even: v.optional(v.boolean()),
+  },
+  handler: async (ctx, { count, category, even }) => {
     const n = count ?? 200;
-    const cats = category
-      ? [category]
-      : (await ctx.runQuery(api.categories.list)).map((c: any) => c.key);
-    for (let i = 0; i < n; i++) {
-      await ctx.scheduler.runAfter(i * 180, internal.arena.runBattle, {
-        category: cats[i % cats.length],
+    const plan: string[] = [];
+    if (category) {
+      for (let i = 0; i < n; i++) plan.push(category);
+    } else {
+      const cats = await ctx.runQuery(api.categories.list);
+      if (even) {
+        for (let i = 0; i < n; i++) plan.push(cats[i % cats.length].key);
+      } else {
+        const w = cats.map((c: any) => ({
+          key: c.key,
+          pairs: Math.max(1, (c.toolCount * (c.toolCount - 1)) / 2),
+        }));
+        const total = w.reduce((s: number, x: any) => s + x.pairs, 0);
+        for (const c of w) {
+          const share = Math.max(1, Math.round((n * c.pairs) / total));
+          for (let k = 0; k < share; k++) plan.push(c.key);
+        }
+      }
+    }
+    // shuffle so categories run interleaved, not in blocks
+    for (let i = plan.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [plan[i], plan[j]] = [plan[j], plan[i]];
+    }
+    let i = 0;
+    for (const cat of plan) {
+      await ctx.scheduler.runAfter(i * 150, internal.arena.runBattle, {
+        category: cat,
         model: MODELS[i % MODELS.length],
       });
+      i++;
     }
-    return { scheduled: n, models: MODELS };
+    return { scheduled: plan.length, weighted: !category && !even };
   },
 });
 
