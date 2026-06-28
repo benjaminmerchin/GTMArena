@@ -36,3 +36,35 @@ export async function chatJSON(
 // Ranking is done by GPT-5.5 (override with `npx convex env set OPENAI_RANK_MODEL ...`).
 export const rankModel = () => process.env.OPENAI_RANK_MODEL ?? "gpt-5.5";
 export const classifyModel = () => process.env.OPENAI_CLASSIFY_MODEL ?? "gpt-5.5";
+
+// GPT-5.5 with live web search (Responses API). Returns parsed JSON from the
+// model's answer (it's prompted to reply with one JSON object).
+export async function webSearchJSON(
+  prompt: string,
+  model = rankModel(),
+): Promise<any | null> {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  try {
+    const res = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model, tools: [{ type: "web_search" }], input: prompt }),
+    });
+    if (!res.ok) {
+      console.error(`[search] ${res.status}: ${await res.text()}`);
+      return null;
+    }
+    const data: any = await res.json();
+    let text = "";
+    for (const o of data.output ?? []) {
+      if (o.type === "message")
+        for (const c of o.content ?? []) if (c.type === "output_text") text += c.text;
+    }
+    const m = text.match(/\{[\s\S]*\}/);
+    return m ? JSON.parse(m[0]) : null;
+  } catch (e) {
+    console.error("[search]", e);
+    return null;
+  }
+}

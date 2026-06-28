@@ -22,9 +22,11 @@ import type * as ping from "../ping.js";
 import type * as races from "../races.js";
 import type * as rankings from "../rankings.js";
 import type * as recommend from "../recommend.js";
+import type * as research from "../research.js";
 import type * as seed from "../seed.js";
 import type * as submissions from "../submissions.js";
 import type * as tools from "../tools.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -47,9 +49,11 @@ declare const fullApi: ApiFromModules<{
   races: typeof races;
   rankings: typeof rankings;
   recommend: typeof recommend;
+  research: typeof research;
   seed: typeof seed;
   submissions: typeof submissions;
   tools: typeof tools;
+  users: typeof users;
 }>;
 
 /**

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark } from "lucide-react";
 import { cn, CATEGORY_META } from "@/lib/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AuthButton } from "@/components/Auth";
 
 const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe };
 
@@ -30,8 +31,8 @@ export function Sidebar() {
           <Zap size={16} /> Enrichment Race
         </Link>
         <Link
-          href="/c/cold-email"
-          className={cn("sidebar-link", path.startsWith("/c/") && "sidebar-link-active")}
+          href="/leaderboards"
+          className={cn("sidebar-link", path === "/leaderboards" && "sidebar-link-active")}
         >
           <Trophy size={16} /> Leaderboards
         </Link>
@@ -56,8 +57,14 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto flex items-center justify-end pt-6">
-        <ThemeToggle />
+      <div className="mt-auto space-y-3 pt-6">
+        <AuthButton />
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[11px] leading-relaxed text-ink/35">
+            Built on Convex · AI Growth Hackathon
+          </span>
+          <ThemeToggle />
+        </div>
       </div>
     </aside>
   );

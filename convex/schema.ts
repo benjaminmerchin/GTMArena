@@ -250,4 +250,52 @@ export default defineSchema({
       }),
     ),
   }).index("by_category", ["category"]),
+
+  // Lightweight accounts (passwordless email; votes/submissions attach here).
+  users: defineTable({
+    email: v.string(),
+    name: v.string(),
+    createdAt: v.number(),
+  }).index("by_email", ["email"]),
+
+  // One-time magic-link tokens emailed via Resend.
+  magicLinks: defineTable({
+    email: v.string(),
+    token: v.string(),
+    expiresAt: v.number(),
+    used: v.boolean(),
+    createdAt: v.number(),
+  }).index("by_token", ["token"]),
+
+  // Rich "wiki" profile per tool, researched live by GPT-5.5 web search.
+  toolProfiles: defineTable({
+    slug: v.string(),
+    summary: v.string(),
+    description: v.string(),
+    website: v.optional(v.string()),
+    logoDomain: v.optional(v.string()),
+    bestFor: v.optional(v.string()),
+    differentiators: v.array(v.string()),
+    pricing: v.array(
+      v.object({ tier: v.string(), price: v.string(), notes: v.optional(v.string()) }),
+    ),
+    freeTier: v.optional(v.boolean()),
+    pricingNotes: v.optional(v.string()),
+    features: v.array(v.string()),
+    integrations: v.array(v.string()),
+    apiAvailable: v.optional(v.boolean()),
+    pros: v.array(v.string()),
+    cons: v.array(v.string()),
+    alternatives: v.array(v.string()),
+    company: v.object({
+      founded: v.optional(v.string()),
+      hq: v.optional(v.string()),
+      teamSize: v.optional(v.string()),
+      funding: v.optional(v.string()),
+      linkedinUrl: v.optional(v.string()),
+    }),
+    sources: v.array(v.object({ title: v.string(), url: v.string() })),
+    model: v.string(),
+    updatedAt: v.number(),
+  }).index("by_slug", ["slug"]),
 });
