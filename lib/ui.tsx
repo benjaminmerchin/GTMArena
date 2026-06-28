@@ -6,8 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Contestant identity colors — magenta, chartreuse, terracotta, mustard.
-// Used ONLY as identity + chart marks (per the kernel), never as decoration.
-export const CONTESTANT = ["#C2185B", "#D4C545", "#C77B57", "#FACF39"];
+// Brightened for legibility on the dark theme; used ONLY as identity + chart
+// marks (per the kernel), never as decoration.
+export const CONTESTANT = ["#F2589B", "#DCE34F", "#E2895F", "#FACF39"];
 
 export const SORTS = [
   { key: "quality", label: "Quality" },

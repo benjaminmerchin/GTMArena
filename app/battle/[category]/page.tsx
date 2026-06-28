@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn, CONTESTANT } from "@/lib/ui";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 type Battle = {
   battleId: string;
@@ -72,29 +73,29 @@ export default function BattlePage() {
 
   return (
     <div className="space-y-6">
-      <Link href={`/c/${category}`} className="text-sm text-ink/50 hover:text-ink">
-        ← {category.replace("-", " ")} leaderboard
+      <Link
+        href={`/c/${category}`}
+        className="inline-flex items-center gap-1.5 text-sm text-ink/45 transition hover:text-ink"
+      >
+        <ArrowLeft size={14} /> {category.replace("-", " ")} leaderboard
       </Link>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold capitalize">
+        <h1 className="font-display text-3xl font-semibold capitalize tracking-tight">
           {category.replace("-", " ")} battle
         </h1>
-        <button
-          onClick={llmJudge}
-          disabled={busy || judging}
-          className="rounded-xl border px-3 py-2 text-sm transition hover:border-coral disabled:opacity-50"
-        >
-          {judging ? "🤖 judging…" : "🤖 Let an LLM judge"}
+        <button onClick={llmJudge} disabled={busy || judging} className="btn-ghost">
+          <Sparkles size={15} className="text-coral" />
+          {judging ? "LLM judging…" : "Let an LLM judge"}
         </button>
       </div>
 
       {battle && (
-        <div className="rounded-2xl border bg-white p-4">
-          <div className="text-[11px] font-medium uppercase tracking-wide text-ink/40">
+        <div className="surface p-4">
+          <div className="text-[11px] font-medium uppercase tracking-wide text-ink/35">
             Shared task
           </div>
-          <p className="mt-1 text-sm">{battle.task}</p>
+          <p className="mt-1 text-sm text-ink/80">{battle.task}</p>
         </div>
       )}
 
@@ -106,37 +107,45 @@ export default function BattlePage() {
             <div
               key={c.label}
               className={cn(
-                "flex flex-col rounded-2xl border bg-white p-4 transition",
-                won && "ring-2 ring-coral",
+                "surface flex flex-col p-4 transition",
+                won && "shadow-glow",
               )}
-              style={{ borderColor: reveal ? CONTESTANT[i] : undefined }}
+              style={{
+                borderColor: reveal ? CONTESTANT[i] : undefined,
+                boxShadow: won ? "0 0 36px -10px rgba(255,111,97,0.55)" : undefined,
+              }}
             >
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-2 text-sm font-semibold">
                   <span
-                    className="grid h-6 w-6 place-items-center rounded-md text-white"
-                    style={{ background: reveal ? CONTESTANT[i] : "#1A1A1A" }}
+                    className="grid h-6 w-6 place-items-center rounded-md text-[12px] font-bold text-black"
+                    style={{ background: reveal ? CONTESTANT[i] : "rgba(255,255,255,0.12)" }}
                   >
                     {c.label}
                   </span>
                   {rev ? (
-                    <Link href={`/tool/${rev.slug}`} className="hover:underline">
+                    <Link href={`/tool/${rev.slug}`} className="hover:text-coral">
                       {rev.name}
                     </Link>
                   ) : (
-                    "Anonymous"
+                    <span className="text-ink/55">Anonymous</span>
+                  )}
+                  {won && (
+                    <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[10px] font-semibold text-coral">
+                      WINNER
+                    </span>
                   )}
                 </span>
-                {rev && <span className="text-sm text-ink/50 tabular-nums">Elo {rev.elo}</span>}
+                {rev && <span className="text-sm tabular-nums text-ink/45">Elo {rev.elo}</span>}
               </div>
-              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-ink/80">
+              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-ink/75">
                 {c.output}
               </pre>
             </div>
           );
         })}
         {!battle && (
-          <div className="p-10 text-center text-ink/40 md:col-span-2">Loading battle…</div>
+          <div className="p-10 text-center text-ink/35 md:col-span-2">Loading battle…</div>
         )}
       </div>
 
@@ -158,10 +167,7 @@ export default function BattlePage() {
                 ? "Both bad."
                 : `${winnerName} wins.`}
           </span>
-          <button
-            onClick={load}
-            className="rounded-xl bg-coral px-4 py-2 text-sm font-medium text-white"
-          >
+          <button onClick={load} className="btn-accent">
             Next battle →
           </button>
         </div>
@@ -183,7 +189,7 @@ function VoteBtn({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="rounded-xl border bg-white px-4 py-2.5 text-sm font-medium transition hover:border-coral disabled:opacity-50"
+      className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium transition hover:border-coral hover:bg-white/[0.05] disabled:opacity-50"
     >
       {children}
     </button>
