@@ -227,4 +227,27 @@ export default defineSchema({
     ),
     createdAt: v.number(),
   }).index("by_status", ["status"]),
+
+  // LLM-generated ranking of the tools in a category (the curation layer).
+  // We ask OpenAI to rank, store the ordered result, and recommendations read
+  // from the latest stored ranking.
+  rankings: defineTable({
+    category: v.string(),
+    model: v.string(), // e.g. "gpt-4o" / "gpt-5.5"
+    createdAt: v.number(),
+    entries: v.array(
+      v.object({
+        toolId: v.id("tools"),
+        rank: v.number(),
+        score: v.number(), // overall 0-100
+        scores: v.object({
+          quality: v.optional(v.number()),
+          affordability: v.optional(v.number()),
+          ease: v.optional(v.number()),
+          speed: v.optional(v.number()),
+        }),
+        rationale: v.string(),
+      }),
+    ),
+  }).index("by_category", ["category"]),
 });
