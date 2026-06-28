@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark, Bot, Radar } from "lucide-react";
+import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark, Bot, Radar, Swords } from "lucide-react";
 import { cn, CATEGORY_META } from "@/lib/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthButton } from "@/components/Auth";
@@ -41,6 +41,12 @@ export function Sidebar() {
           className={cn("sidebar-link", path === "/leaderboards" && "sidebar-link-active")}
         >
           <Trophy size={16} /> Leaderboards
+        </Link>
+        <Link
+          href="/battles"
+          className={cn("sidebar-link", path === "/battles" && "sidebar-link-active")}
+        >
+          <Swords size={16} /> Battle Arena
         </Link>
       </nav>
 

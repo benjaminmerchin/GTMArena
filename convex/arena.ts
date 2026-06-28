@@ -7,7 +7,7 @@ import { applyBattleResult } from "./lib/stats";
 // A cheap model from each provider — battles rotate across them.
 export const MODELS = [
   "openai/gpt-5.4-nano",
-  "deepseek/deepseek-v3.2",
+  "deepseek/deepseek-v4-flash",
   "x-ai/grok-4.1-fast",
   "anthropic/claude-haiku-4.5",
   "google/gemini-3.5-flash",
@@ -15,7 +15,7 @@ export const MODELS = [
 
 const PRETTY: Record<string, string> = {
   "openai/gpt-5.4-nano": "GPT-5.4 nano",
-  "deepseek/deepseek-v3.2": "DeepSeek V3.2",
+  "deepseek/deepseek-v4-flash": "DeepSeek V4 Flash",
   "x-ai/grok-4.1-fast": "Grok 4.1",
   "anthropic/claude-haiku-4.5": "Claude Haiku 4.5",
   "google/gemini-3.5-flash": "Gemini 3.5 Flash",
