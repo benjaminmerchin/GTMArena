@@ -1,0 +1,76 @@
+# AI Growth Hackathon — Guidelines (Agent Context)
+
+> Host: Orange Slice · June 27–28 · Sponsors: Corgi, Lopus, Cursor, Y Combinator, OpenAI, Convex, Fiber AI
+
+## Hard Rules (constraints the build MUST satisfy)
+- Teams may be up to 4 people.
+- **You cannot work on a project started prior to the hackathon.** Must be built fresh during the event.
+- You CAN build a standalone feature/tool that would integrate into a pre-existing project, **but it must live in an entirely separate codebase.**
+- **The project must be open-sourced on GitHub for the full duration of the hackathon.** (You may close-source it after the event.)
+
+## What "good" looks like (theme / framing)
+The event is framed around **Growth Engineers** who:
+1. Write code
+2. Run experiments end-to-end
+3. Automate themselves with AI
+4. Own the entire growth pipeline
+
+Guiding question of the event: *"Is distribution the only moat?"*
+
+## Judging Criteria
+1. **Usefulness** — in a Growth / GTM / RevOps context
+2. **Technical Complexity**
+3. **Coolness**
+
+Note from organizers: **slides are discouraged — just demo a working project.**
+
+## How Judging Works
+1. Submit your open-source project via Vibe Apps with a **3-minute demo video**
+2. Judges review and select the best projects
+3. Selected teams present onstage
+4. "Be cool :)"
+
+## How to Submit
+1. Create an account at: https://vibeapps.dev
+2. Submit ONLY at: https://convex.link/growthhack
+3. Record a video → fill out the submission form → hit **Submit App**
+
+Submission form asks for:
+- App Title
+- App/Project Tagline (one-sentence pitch)
+- Description (Markdown + fenced code blocks supported), covering:
+  - Problem you're solving
+  - How the app works
+  - Notable features
+  - Why you built it
+  - Tech stack list
+  - Challenges you ran into
+  - Any success stories or metrics
+- App Website Link
+
+## Project Idea Tracks
+- **Sales Cyborgs** — AI-enhanced sales ("Cluely if it worked")
+- **AI Ad Factories** — self-driving campaigns, AI-gen creative, optimization tools
+- **Reading Minds** — agentic analytics, signal detection, churn, lead-building
+- **Revenue on Autopilot** — cold outbound & pipeline automation
+- **Zero to One** — AI-enhanced PLG & onboarding
+- **Algorithm Hacking** — AI social media & virality engines
+
+## Key Dates
+- Sat 6:30p — hacking starts
+- Sun 4:00p — projects due
+- Sun 5:00p — finalists announced + final pitches
+- Sun 6:00p — winners announced
+
+## Prizes
+- 1st: $2,500 cash + $5,000 OpenAI credits + $500 Cursor credits
+- 2nd: $1,500 cash + $2,500 OpenAI credits
+- 3rd: $500 cash + $1,000 OpenAI credits
+- Best use of Convex: 1st $1,000 / 2nd $500 (gift cards)
+
+## Available Resources / Credits
+- $50 OpenAI credits, $50 Cursor credits, $50 Orange Slice credits, $500 Fiber AI credits, free Convex
+- Convex template app + repo: https://convex.link/growthdemo
+- Convex AI docs: https://docs.convex.dev/ai · components: convex.dev/components
+- OpenAI docs MCP: `codex mcp add openaiDeveloperDocs --url https://developers.openai.com/mcp`
+- Fiber AI (GTM data APIs): https://fiber.ai/hackathon · MCP: https://docs.fiber.ai/article/using-mcp-in-llms · OpenFiber UI: https://github.com/fiber-ai/open-fiber

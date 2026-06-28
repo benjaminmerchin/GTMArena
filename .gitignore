@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# env / secrets — NEVER commit deploy keys
+.env.local
+.env*.local
+
+# convex
+.convex/
+
+# build
+dist/
+.next/
+out/
+
+# misc
+.DS_Store
+*.log
+npm-debug.log*
