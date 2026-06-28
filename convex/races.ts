@@ -5,8 +5,10 @@ import {
   internalQuery,
   internalMutation,
   internalAction,
+  action,
 } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
+import { webSearchJSON } from "./lib/openai";
 import { Id } from "./_generated/dataModel";
 import {
   DEFAULT_LEADS,
@@ -115,6 +117,72 @@ export const createRace = mutation({
     }
 
     return { raceId };
+  },
+});
+
+// Resolve each lead's domain + LinkedIn (GPT-5.5 web search, cached) so the
+// finders have a domain and Fiber has a LinkedIn URL — then run a real race.
+export const createLiveRace = action({
+  args: { name: v.optional(v.string()), leads: v.array(leadValidator) },
+  handler: async (ctx, { name, leads }) => {
+    const resolved = await Promise.all(
+      leads.map(async (lead) => {
+        if (lead.domain && lead.linkedin) return lead;
+        const k = `resolve|${(lead.name ?? "").trim().toLowerCase()}|${(lead.company ?? "").trim().toLowerCase()}`;
+        const cached = await ctx.runQuery(internal.races.getResolve, { key: k });
+        let domain = lead.domain ?? cached?.domain ?? undefined;
+        let linkedin = lead.linkedin ?? cached?.linkedin ?? undefined;
+        if (!cached && (!domain || !linkedin)) {
+          const r = await webSearchJSON(
+            `Find the LinkedIn profile URL and company website domain for "${lead.name}" at company "${lead.company}". ` +
+              `Return ONLY JSON: {"linkedinUrl":"https://www.linkedin.com/in/...","domain":"example.com"}. Use "" if genuinely unknown.`,
+          );
+          const rd = typeof r?.domain === "string" && r.domain ? r.domain : undefined;
+          const rl = typeof r?.linkedinUrl === "string" && r.linkedinUrl ? r.linkedinUrl : undefined;
+          domain = domain ?? rd;
+          linkedin = linkedin ?? rl;
+          await ctx.runMutation(internal.races.putResolve, { key: k, domain, linkedin });
+        }
+        return { ...lead, domain, linkedin };
+      }),
+    );
+
+    return await ctx.runMutation(api.races.createRace, {
+      name: name ?? "Live enrichment",
+      providerSlugs: ["hunter", "prospeo", "people-data-labs", "fiber-ai"],
+      leads: resolved,
+      requestedFields: ["email", "title", "linkedin"],
+      useReal: true,
+    });
+  },
+});
+
+export const getResolve = internalQuery({
+  args: { key: v.string() },
+  handler: async (ctx, { key }) => {
+    const r = await ctx.db
+      .query("resolutions")
+      .withIndex("by_key", (q) => q.eq("key", key))
+      .unique();
+    return r ? { domain: r.domain, linkedin: r.linkedin } : null;
+  },
+});
+
+export const putResolve = internalMutation({
+  args: { key: v.string(), domain: v.optional(v.string()), linkedin: v.optional(v.string()) },
+  handler: async (ctx, a) => {
+    const e = await ctx.db
+      .query("resolutions")
+      .withIndex("by_key", (q) => q.eq("key", a.key))
+      .unique();
+    if (e) await ctx.db.patch(e._id, { domain: a.domain, linkedin: a.linkedin });
+    else
+      await ctx.db.insert("resolutions", {
+        key: a.key,
+        domain: a.domain,
+        linkedin: a.linkedin,
+        createdAt: Date.now(),
+      });
   },
 });
 

@@ -256,36 +256,33 @@ async function pdlEnrich(lead: Lead, fields: RequestedField[]): Promise<EnrichRe
   return pack(out, fields, 0.01, started);
 }
 
-// Fiber AI — turbo-enrich (best-effort; identifier = LinkedIn / email / domain).
+// Fiber AI — contact reveal from a LinkedIn URL (the live race resolves one
+// per lead first). POST /v1/contact-details/single, apiKey in the body.
 async function fiberEnrich(lead: Lead, fields: RequestedField[]): Promise<EnrichResult> {
   const key = process.env.FIBER_API_KEY;
   const started = Date.now();
   const out: EnrichFields = {};
-  const identifier = lead.linkedin ?? lead.email ?? lead.domain ?? lead.company;
-  if (key && identifier) {
+  if (key && lead.linkedin) {
     try {
-      const res = await fetch("https://api.fiber.ai/v1/contacts/turbo-enrich", {
+      const res = await fetch("https://api.fiber.ai/v1/contact-details/single", {
         method: "POST",
-        headers: { "x-api-key": key, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          identifier,
+          apiKey: key,
           linkedinUrl: lead.linkedin,
-          email: lead.email,
-          domain: lead.domain,
-          name: lead.name,
-          company: lead.company,
+          enrichmentType: { getWorkEmails: true, getPersonalEmails: false, getPhoneNumbers: false },
+          validateEmails: true,
         }),
       });
       if (res.ok) {
         const data: any = await res.json();
-        const c = data.contact ?? data.data ?? data ?? {};
-        if (c.email) {
-          out.email = c.email;
-          out.emailValid =
-            c.emailValidity === true || c.emailValidity === "valid" || c.emailStatus === "valid";
+        const emails: any[] = data?.output?.profile?.emails ?? [];
+        const pick = emails.find((e) => e.type === "work") ?? emails[0];
+        if (pick?.email) {
+          out.email = pick.email;
+          out.emailValid = pick.status ? pick.status === "valid" : true;
         }
-        if (c.title) out.title = c.title;
-        if (c.linkedinUrl ?? c.linkedin) out.linkedin = c.linkedinUrl ?? c.linkedin;
+        out.linkedin = lead.linkedin;
       } else console.error("[fiber]", res.status, await res.text());
     } catch (e) {
       console.error("[fiber]", e);

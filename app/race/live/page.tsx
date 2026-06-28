@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { CONTESTANT, fmtPct, fmtSpeed } from "@/lib/ui";
 import { Zap, Users, ShieldCheck } from "lucide-react";
@@ -33,7 +33,7 @@ function parseLeads(text: string) {
 }
 
 export default function LiveRace() {
-  const createRace = useMutation(api.races.createRace);
+  const createLiveRace = useAction(api.races.createLiveRace);
   const [text, setText] = useState("");
   const [raceId, setRaceId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -44,13 +44,7 @@ export default function LiveRace() {
     if (!leads.length || busy) return;
     setBusy(true);
     try {
-      const r = await createRace({
-        name: "Live enrichment",
-        providerSlugs: PROVIDERS,
-        leads,
-        requestedFields: ["email", "title", "linkedin"],
-        useReal: true,
-      });
+      const r = await createLiveRace({ name: "Live enrichment", leads });
       setRaceId(r.raceId);
     } finally {
       setBusy(false);

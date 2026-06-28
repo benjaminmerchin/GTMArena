@@ -315,4 +315,13 @@ export default defineSchema({
     latencyMs: v.number(),
     createdAt: v.number(),
   }).index("by_key", ["key"]),
+
+  // Resolved identifiers per (name, company) — domain + LinkedIn, found once by
+  // GPT-5.5 web search and cached (so the live race doesn't re-resolve/re-spend).
+  resolutions: defineTable({
+    key: v.string(),
+    domain: v.optional(v.string()),
+    linkedin: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_key", ["key"]),
 });
