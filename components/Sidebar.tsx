@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe } from "lucide-react";
+import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark } from "lucide-react";
 import { cn, CATEGORY_META } from "@/lib/ui";
-import { Coliseum } from "@/components/Coliseum";
 
 const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe };
 
@@ -13,7 +12,7 @@ export function Sidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line bg-[#080C16] px-3 py-5 lg:flex">
       <Link href="/" className="mb-7 flex items-center gap-2.5 px-2">
-        <Coliseum className="h-7 w-7 text-white" />
+        <Landmark className="h-6 w-6 text-white" />
         <span className="font-display text-xl leading-none text-white">GTM Arena</span>
       </Link>
 

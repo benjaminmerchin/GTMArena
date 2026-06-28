@@ -6,18 +6,13 @@
     </linearGradient>
   </defs>
   <rect width="32" height="32" rx="7" fill="url(#g)"/>
-  <!-- Colosseum: domed top, tiered arcade -->
-  <path fill="#ffffff" d="M5 22 V13 Q16 8 27 13 V22 Z"/>
-  <g fill="#0A2540">
-    <!-- cornice / tier line -->
-    <path d="M6 15.4 H26 V16.2 H6 Z"/>
-    <!-- ground arches -->
-    <path d="M7.1 21 V17.5 Q9.35 16 11.6 17.5 V21 Z"/>
-    <path d="M13.7 21 V17.5 Q15.95 16 18.2 17.5 V21 Z"/>
-    <path d="M20.3 21 V17.5 Q22.55 16 24.8 17.5 V21 Z"/>
-    <!-- upper colonnade windows -->
-    <path d="M11.5 12.4 H13.3 V14.6 H11.5 Z"/>
-    <path d="M15.1 11.9 H16.9 V14.6 H15.1 Z"/>
-    <path d="M18.7 12.4 H20.5 V14.6 H18.7 Z"/>
+  <!-- lucide "landmark" icon -->
+  <g transform="translate(4 4)" fill="none" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" x2="21" y1="22" y2="22"/>
+    <line x1="6" x2="6" y1="18" y2="11"/>
+    <line x1="10" x2="10" y1="18" y2="11"/>
+    <line x1="14" x2="14" y1="18" y2="11"/>
+    <line x1="18" x2="18" y1="18" y2="11"/>
+    <polygon points="12 2 20 7 4 7"/>
   </g>
 </svg>
