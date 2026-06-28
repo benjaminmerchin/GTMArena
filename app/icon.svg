@@ -1,17 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="7" fill="#0A2540"/>
-  <!-- coliseum facade -->
-  <rect x="5" y="9" width="22" height="14" rx="2" fill="#ffffff"/>
-  <!-- upper arch openings -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#163D78"/>
+      <stop offset="1" stop-color="#0A2540"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#g)"/>
+  <!-- Colosseum: domed top, tiered arcade -->
+  <path fill="#ffffff" d="M5 22 V13 Q16 8 27 13 V22 Z"/>
   <g fill="#0A2540">
-    <path d="M6.6 15.6 V13 Q8.35 11.5 10.1 13 V15.6 Z"/>
-    <path d="M11.7 15.6 V13 Q13.45 11.5 15.2 13 V15.6 Z"/>
-    <path d="M16.8 15.6 V13 Q18.55 11.5 20.3 13 V15.6 Z"/>
-    <path d="M21.9 15.6 V13 Q23.65 11.5 25.4 13 V15.6 Z"/>
-    <!-- lower arch openings -->
-    <path d="M6.6 22 V18.2 Q8.35 16.7 10.1 18.2 V22 Z"/>
-    <path d="M11.7 22 V18.2 Q13.45 16.7 15.2 18.2 V22 Z"/>
-    <path d="M16.8 22 V18.2 Q18.55 16.7 20.3 18.2 V22 Z"/>
-    <path d="M21.9 22 V18.2 Q23.65 16.7 25.4 18.2 V22 Z"/>
+    <!-- cornice / tier line -->
+    <path d="M6 15.4 H26 V16.2 H6 Z"/>
+    <!-- ground arches -->
+    <path d="M7.1 21 V17.5 Q9.35 16 11.6 17.5 V21 Z"/>
+    <path d="M13.7 21 V17.5 Q15.95 16 18.2 17.5 V21 Z"/>
+    <path d="M20.3 21 V17.5 Q22.55 16 24.8 17.5 V21 Z"/>
+    <!-- upper colonnade windows -->
+    <path d="M11.5 12.4 H13.3 V14.6 H11.5 Z"/>
+    <path d="M15.1 11.9 H16.9 V14.6 H15.1 Z"/>
+    <path d="M18.7 12.4 H20.5 V14.6 H18.7 Z"/>
   </g>
 </svg>
