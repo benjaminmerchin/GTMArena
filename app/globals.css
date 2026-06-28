@@ -2,19 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ───────────────────────────────────────────────
+   RGB channels (space-separated) so Tailwind alpha utilities work.
+   :root = light, .dark = dark. Premium purple brand. */
+:root {
+  --bg: 249 248 252;
+  --panel: 255 255 255;
+  --panel2: 244 242 250;
+  --ink: 28 22 46; /* near-black, faint purple */
+  --line: 232 228 242;
+  --brand: 124 58 237; /* #7C3AED — deep premium purple */
+  --accent: 109 40 217; /* #6D28D9 — readable links on light */
+  --shadow-card: 0 1px 2px rgba(24, 16, 48, 0.05), 0 14px 32px -16px rgba(24, 16, 48, 0.18);
+  --shadow-glow: 0 8px 30px -10px rgba(124, 58, 237, 0.4);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 11 9 19;
+  --panel: 22 18 34;
+  --panel2: 32 26 50;
+  --ink: 235 232 246; /* light text, faint purple */
+  --line: 40 33 60;
+  --brand: 139 92 246; /* #8B5CF6 — vivid violet on dark */
+  --accent: 180 156 255; /* #B49CFF — bright link/highlight */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 38px -18px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 10px 36px -10px rgba(139, 92, 246, 0.55);
+  color-scheme: dark;
+}
+
 @layer base {
   * {
-    border-color: #1e2a3d;
+    border-color: rgb(var(--line));
   }
   html,
   body {
-    background: #0a0f1c;
-    color: #e7ecf5;
+    background: rgb(var(--bg));
+    color: rgb(var(--ink));
   }
   body {
     background-image: radial-gradient(
-      48% 38% at 50% -6%,
-      rgba(47, 111, 237, 0.1),
+      52% 42% at 50% -8%,
+      rgb(var(--brand) / 0.16),
       transparent 70%
     );
     background-attachment: fixed;
@@ -26,25 +55,30 @@
     @apply rounded-2xl border border-line bg-panel shadow-card;
   }
   .surface-hover {
-    @apply transition hover:border-white/20 hover:bg-[#121C30];
+    @apply transition hover:border-accent/40 hover:bg-panel2;
   }
   .chip {
-    @apply rounded-full border border-line bg-white/[0.04];
+    @apply rounded-full border border-line bg-ink/[0.04];
   }
   .btn-navy {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-sm font-medium text-white shadow-glow transition hover:brightness-110 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow transition hover:brightness-110 disabled:opacity-50;
   }
   .btn-soft {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-ink transition hover:border-white/25 hover:bg-white/[0.07] disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-ink/[0.04] px-4 py-2.5 text-sm font-medium text-ink transition hover:border-accent/40 hover:bg-ink/[0.07] disabled:opacity-50;
   }
   .sidebar-link {
-    @apply flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink/60 transition hover:bg-white/[0.05] hover:text-ink;
+    @apply flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink/60 transition hover:bg-ink/[0.05] hover:text-ink;
   }
   .sidebar-link-active {
-    @apply bg-white/[0.08] font-medium text-white;
+    @apply bg-accent/15 font-medium text-accent;
   }
 }
 
+/* Modern display headings: tighten tracking. */
+.font-display {
+  letter-spacing: -0.02em;
+}
+
 ::selection {
-  background: rgba(47, 111, 237, 0.32);
+  background: rgb(var(--brand) / 0.28);
 }

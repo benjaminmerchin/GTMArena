@@ -81,7 +81,7 @@ export default function BattlePage() {
           >
             ← {category.replace("-", " ")} leaderboard
           </Link>
-          <h1 className="mt-1 font-display text-4xl capitalize text-white">
+          <h1 className="mt-1 font-display text-4xl font-semibold capitalize text-ink">
             {category.replace("-", " ")} battle
           </h1>
         </div>
@@ -110,14 +110,19 @@ export default function BattlePage() {
               className="surface flex flex-col p-5 transition"
               style={{
                 borderColor: reveal ? CONTESTANT[i] : undefined,
-                boxShadow: won ? "0 0 0 1.5px #6AA0FF, 0 16px 40px -16px #2f6fed66" : undefined,
+                boxShadow: won
+                  ? "0 0 0 1.5px #8B5CF6, 0 16px 44px -16px rgba(139,92,246,0.45)"
+                  : undefined,
               }}
             >
               <div className="mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-2.5 text-sm font-semibold">
                   <span
-                    className="grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold text-[#0A0F1C]"
-                    style={{ background: reveal ? CONTESTANT[i] : "rgba(255,255,255,0.16)" }}
+                    className="grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold"
+                    style={{
+                      background: reveal ? CONTESTANT[i] : "rgb(var(--ink) / 0.12)",
+                      color: reveal ? "#0B0913" : "rgb(var(--ink) / 0.7)",
+                    }}
                   >
                     {c.label}
                   </span>
@@ -187,7 +192,7 @@ function VoteBtn({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="rounded-xl border border-line bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-ink transition hover:border-accent hover:bg-white/[0.07] disabled:opacity-50"
+      className="rounded-xl border border-line bg-ink/[0.04] px-5 py-2.5 text-sm font-medium text-ink transition hover:border-accent hover:bg-ink/[0.07] disabled:opacity-50"
     >
       {children}
     </button>

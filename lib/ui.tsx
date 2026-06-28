@@ -5,8 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Contestant identity colors — distinct on white, clear of the navy brand.
-export const CONTESTANT = ["#0CA678", "#F59F00", "#E64980", "#7048E8"];
+// Contestant identity colors — distinct in both themes (match c1–c4 tokens).
+export const CONTESTANT = ["#10B981", "#F59E0B", "#EC4899", "#8B5CF6"];
 
 export const SORTS = [
   { key: "quality", label: "Quality" },

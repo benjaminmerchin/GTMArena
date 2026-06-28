@@ -1,30 +1,35 @@
 import type { Config } from "tailwindcss";
 
-// Dark navy theme.
+// Premium purple theme, dark/light via CSS variables (see globals.css).
+// Color tokens are `rgb(var(--x) / <alpha-value>)` so opacity utilities
+// (e.g. `text-ink/55`, `bg-ink/[0.04]`) resolve correctly in both themes.
 const config: Config = {
+  darkMode: "class",
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        bg: "#0A0F1C",
-        panel: "#0E1626",
-        ink: "#E7ECF5", // primary text (light)
-        navy: "#2F6FED", // primary buttons / active (blue, pops on dark)
-        accent: "#6AA0FF", // links / highlights
-        line: "#1E2A3D", // hairline borders
-        // contestant identity marks (brightened for dark)
-        c1: "#2DD4BF", // teal
-        c2: "#FBBF24", // amber
-        c3: "#F472B6", // pink
-        c4: "#A78BFA", // violet
+        bg: "rgb(var(--bg) / <alpha-value>)",
+        panel: "rgb(var(--panel) / <alpha-value>)",
+        panel2: "rgb(var(--panel2) / <alpha-value>)",
+        ink: "rgb(var(--ink) / <alpha-value>)", // primary text (theme-aware)
+        line: "rgb(var(--line) / <alpha-value>)", // hairline borders
+        brand: "rgb(var(--brand) / <alpha-value>)", // premium purple
+        navy: "rgb(var(--brand) / <alpha-value>)", // legacy alias → purple
+        accent: "rgb(var(--accent) / <alpha-value>)", // lighter purple / links
+        // contestant identity marks (stable across themes)
+        c1: "#10B981", // emerald
+        c2: "#F59E0B", // amber
+        c3: "#EC4899", // pink
+        c4: "#8B5CF6", // violet
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "Georgia", "ui-serif", "serif"],
+        display: ["var(--font-display)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        card: "0 1px 2px #00000040, 0 14px 34px -16px #00000080",
-        glow: "0 8px 30px -10px rgba(47,111,237,0.5)",
+        card: "var(--shadow-card)",
+        glow: "var(--shadow-glow)",
       },
     },
   },

@@ -34,7 +34,7 @@ export default function RacePage() {
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <div className="text-sm font-medium text-accent">Race · live grader</div>
-          <h1 className="mt-1 font-display text-4xl text-white">Enrichment Arena</h1>
+          <h1 className="mt-1 font-display text-4xl font-semibold text-ink">Enrichment Arena</h1>
           <p className="mt-2 max-w-2xl text-ink/55">
             Drop a lead list → providers fill columns live → an objective grader
             scores email validity, coverage &amp; cost-per-valid.
@@ -66,7 +66,7 @@ export default function RacePage() {
                   {p.filled}/{p.total}
                 </span>
               </div>
-              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-ink/[0.07]">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{

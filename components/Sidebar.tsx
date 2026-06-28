@@ -4,16 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark } from "lucide-react";
 import { cn, CATEGORY_META } from "@/lib/ui";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe };
 
 export function Sidebar() {
   const path = usePathname();
   return (
-    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line bg-[#080C16] px-3 py-5 lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line bg-panel px-3 py-5 lg:flex">
       <Link href="/" className="mb-7 flex items-center gap-2.5 px-2">
-        <Landmark className="h-6 w-6 text-white" />
-        <span className="font-display text-xl leading-none text-white">GTM Arena</span>
+        <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-white shadow-glow">
+          <Landmark className="h-[18px] w-[18px]" />
+        </span>
+        <span className="font-display text-xl font-semibold leading-none text-ink">GTM Arena</span>
       </Link>
 
       <nav className="space-y-1">
@@ -53,11 +56,8 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto space-y-3 pt-6">
-        <button className="btn-navy w-full">Sign in</button>
-        <div className="px-2 text-[11px] leading-relaxed text-ink/35">
-          Built on Convex · AI Growth Hackathon
-        </div>
+      <div className="mt-auto flex items-center justify-end pt-6">
+        <ThemeToggle />
       </div>
     </aside>
   );

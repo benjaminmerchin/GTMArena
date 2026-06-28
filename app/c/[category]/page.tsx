@@ -24,7 +24,7 @@ export default function CategoryPage() {
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <div className="text-sm font-medium text-accent">Category</div>
-          <h1 className="mt-1 font-display text-4xl text-white">{cat?.name ?? "…"}</h1>
+          <h1 className="mt-1 font-display text-4xl font-semibold text-ink">{cat?.name ?? "…"}</h1>
           <p className="mt-2 max-w-xl text-ink/55">{cat?.tagline}</p>
         </div>
         {cat &&
@@ -42,7 +42,7 @@ export default function CategoryPage() {
       {/* AI ranking — the curation layer */}
       <div className="surface mt-8 overflow-hidden">
         <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-          <div className="flex items-center gap-2 text-sm font-medium text-white">
+          <div className="flex items-center gap-2 text-sm font-medium text-ink">
             <Sparkles size={15} className="text-accent" /> AI ranking
           </div>
           <div className="text-xs text-ink/40">ranked by {ranking?.model ?? "gpt-5.5"}</div>
@@ -51,12 +51,12 @@ export default function CategoryPage() {
           <Link
             key={e.slug}
             href={`/tool/${e.slug}`}
-            className="flex items-start gap-3.5 border-b border-line px-5 py-4 transition last:border-0 hover:bg-white/[0.03]"
+            className="flex items-start gap-3.5 border-b border-line px-5 py-4 transition last:border-0 hover:bg-ink/[0.03]"
           >
             <span
               className={cn(
                 "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md text-[11px] font-bold",
-                e.rank === 1 ? "bg-accent text-white" : "bg-white/[0.06] text-ink/60",
+                e.rank === 1 ? "bg-brand text-white" : "bg-ink/[0.06] text-ink/60",
               )}
             >
               {e.rank}
@@ -92,8 +92,8 @@ export default function CategoryPage() {
             className={cn(
               "rounded-full border px-4 py-2 text-sm transition",
               sort === s.key
-                ? "border-navy bg-navy text-white"
-                : "border-line bg-white/[0.03] text-ink/65 hover:border-white/25 hover:text-ink",
+                ? "border-brand bg-brand text-white shadow-glow"
+                : "border-line bg-ink/[0.03] text-ink/65 hover:border-accent/40 hover:text-ink",
             )}
           >
             {s.label}
@@ -107,8 +107,8 @@ export default function CategoryPage() {
             className={cn(
               "rounded-full border px-3 py-1.5 text-xs transition",
               segment === sg.key
-                ? "border-white/30 bg-white/10 text-white"
-                : "border-line bg-white/[0.02] text-ink/50 hover:border-white/20",
+                ? "border-accent/40 bg-accent/15 text-accent"
+                : "border-line bg-ink/[0.02] text-ink/50 hover:border-ink/20",
             )}
           >
             {sg.label}
@@ -129,11 +129,11 @@ export default function CategoryPage() {
           <Link
             key={r.toolId}
             href={`/tool/${r.slug}`}
-            className="grid grid-cols-12 items-center gap-3 border-b border-line px-5 py-3.5 text-sm transition last:border-0 hover:bg-white/[0.03]"
+            className="grid grid-cols-12 items-center gap-3 border-b border-line px-5 py-3.5 text-sm transition last:border-0 hover:bg-ink/[0.03]"
           >
             <div className="col-span-1 tabular-nums text-ink/40">{r.rank}</div>
             <div className="col-span-4 flex items-center gap-3">
-              <span className="grid h-8 w-8 place-items-center rounded-lg border border-line bg-white/[0.05] text-[11px] font-semibold text-ink/70">
+              <span className="grid h-8 w-8 place-items-center rounded-lg border border-line bg-ink/[0.05] text-[11px] font-semibold text-ink/70">
                 {r.logoText}
               </span>
               <span className="font-medium text-ink">{r.name}</span>

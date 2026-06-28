@@ -12,6 +12,7 @@ node_modules/
 dist/
 .next/
 out/
+*.tsbuildinfo
 
 # misc
 .DS_Store

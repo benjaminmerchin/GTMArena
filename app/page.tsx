@@ -30,11 +30,11 @@ export default function Hub() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 lg:py-20">
       <div className="text-center">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.04] px-3.5 py-1.5 text-xs text-ink/60">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-ink/[0.04] px-3.5 py-1.5 text-xs text-ink/60">
           <Sparkles size={13} className="text-accent" /> Rankings by GPT-5.5 · battles by
           humans + LLMs
         </div>
-        <h1 className="font-display text-[3.25rem] leading-[1.07] text-white sm:text-[3.75rem]">
+        <h1 className="font-display text-[3.25rem] font-semibold leading-[1.07] text-ink sm:text-[3.75rem]">
           Which GTM tool should
           <br />
           you actually use?
@@ -65,7 +65,7 @@ export default function Hub() {
             onClick={ask}
             disabled={loading}
             aria-label="Ask"
-            className="grid h-10 w-10 place-items-center rounded-xl bg-navy text-white shadow-glow transition hover:brightness-110 disabled:opacity-50"
+            className="grid h-10 w-10 place-items-center rounded-xl bg-brand text-white shadow-glow transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? (
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -85,13 +85,13 @@ export default function Hub() {
             {answer.model && <span>ranked by {answer.model}</span>}
           </div>
           <div className="mt-3 flex items-start gap-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-white/5 text-sm font-semibold text-ink/80">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-ink/5 text-sm font-semibold text-ink/80">
               {answer.best.logoText}
             </span>
             <div className="min-w-0">
               <Link
                 href={`/tool/${answer.best.slug}`}
-                className="font-display text-2xl text-white hover:text-accent"
+                className="font-display text-2xl font-semibold text-ink hover:text-accent"
               >
                 {answer.best.name}
               </Link>
@@ -126,7 +126,7 @@ export default function Hub() {
             <Link
               key={c.key}
               href={`/c/${c.key}`}
-              className="flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-4 py-2.5 text-sm text-ink/70 transition hover:border-white/25 hover:text-ink"
+              className="flex items-center gap-2 rounded-full border border-line bg-ink/[0.03] px-4 py-2.5 text-sm text-ink/70 transition hover:border-accent/40 hover:text-ink"
             >
               <Icon size={15} /> {c.name}
             </Link>
@@ -143,7 +143,7 @@ export default function Hub() {
             <Link
               key={t.slug}
               href={`/tool/${t.slug}`}
-              className="chip flex items-center gap-2 px-3.5 py-2 text-sm transition hover:border-white/25"
+              className="chip flex items-center gap-2 px-3.5 py-2 text-sm transition hover:border-accent/40"
             >
               <span className="text-ink/30 tabular-nums">{i + 1}</span>
               <span className="font-medium text-ink">{t.name}</span>
@@ -152,7 +152,7 @@ export default function Hub() {
           ))}
           {!top &&
             Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-9 w-28 animate-pulse rounded-full bg-white/[0.04]" />
+              <div key={i} className="h-9 w-28 animate-pulse rounded-full bg-ink/[0.04]" />
             ))}
         </div>
       </div>
