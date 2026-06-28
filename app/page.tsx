@@ -5,9 +5,9 @@ import { useState } from "react";
 import { useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { CATEGORY_META } from "@/lib/ui";
-import { Mail, Sparkles, Search, Phone, Globe, ArrowUp, Trophy, ArrowRight } from "lucide-react";
+import { Mail, Sparkles, Search, Phone, Globe, ArrowUp, Trophy, ArrowRight, Bot, Radar } from "lucide-react";
 
-const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe };
+const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe, Bot, Radar };
 
 export default function Hub() {
   const top = useQuery(api.categories.globalTop, { limit: 8 });

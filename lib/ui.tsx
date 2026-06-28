@@ -34,6 +34,8 @@ export const CATEGORY_META = [
   { key: "email-context", name: "Email Context", icon: "Search" },
   { key: "parallel-dialer", name: "Parallel Dialer", icon: "Phone" },
   { key: "scraping", name: "Scraping", icon: "Globe" },
+  { key: "ai-sdr", name: "AI SDR", icon: "Bot" },
+  { key: "intent-signals", name: "Intent & Signals", icon: "Radar" },
 ];
 
 export const fmtSpeed = (ms?: number | null) =>

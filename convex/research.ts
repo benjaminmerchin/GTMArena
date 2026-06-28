@@ -123,3 +123,19 @@ export const profileAll = action({
     return { scheduled: tools.length };
   },
 });
+
+// Research only tools that don't have a profile yet (e.g. newly added ones).
+export const profileMissing = action({
+  args: {},
+  handler: async (ctx) => {
+    const tools = await ctx.runQuery(api.tools.list, {});
+    let i = 0;
+    for (const t of tools) {
+      const existing = await ctx.runQuery(api.research.getProfile, { slug: t.slug });
+      if (existing) continue;
+      await ctx.scheduler.runAfter(i * 5000, api.research.profileTool, { slug: t.slug });
+      i++;
+    }
+    return { scheduled: i };
+  },
+});

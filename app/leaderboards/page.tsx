@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Mail, Sparkles, Search, Phone, Globe, ArrowUpRight, Trophy } from "lucide-react";
+import { Mail, Sparkles, Search, Phone, Globe, ArrowUpRight, Trophy, Bot, Radar } from "lucide-react";
 import { cn } from "@/lib/ui";
 
-const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe };
+const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe, Bot, Radar };
 
 export default function LeaderboardsIndex() {
   const cats = useQuery(api.categories.list);

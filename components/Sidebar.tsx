@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark } from "lucide-react";
+import { Plus, Zap, Trophy, Mail, Sparkles, Search, Phone, Globe, Landmark, Bot, Radar } from "lucide-react";
 import { cn, CATEGORY_META } from "@/lib/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthButton } from "@/components/Auth";
 
-const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe };
+const ICONS: Record<string, any> = { Mail, Sparkles, Search, Phone, Globe, Bot, Radar };
 
 export function Sidebar() {
   const path = usePathname();

@@ -24,6 +24,7 @@ import type * as rankings from "../rankings.js";
 import type * as recommend from "../recommend.js";
 import type * as research from "../research.js";
 import type * as seed from "../seed.js";
+import type * as seedExtra from "../seedExtra.js";
 import type * as submissions from "../submissions.js";
 import type * as tools from "../tools.js";
 import type * as users from "../users.js";
@@ -51,6 +52,7 @@ declare const fullApi: ApiFromModules<{
   recommend: typeof recommend;
   research: typeof research;
   seed: typeof seed;
+  seedExtra: typeof seedExtra;
   submissions: typeof submissions;
   tools: typeof tools;
   users: typeof users;
