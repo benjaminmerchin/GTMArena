@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Github } from "lucide-react";
+import { Coliseum } from "@/components/Coliseum";
 
 export function Topbar() {
   return (
     <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-line bg-white/85 px-6 backdrop-blur lg:px-10">
       <div className="flex items-center gap-2.5">
         <Link href="/" className="flex items-center gap-2 lg:hidden">
-          <span className="grid h-6 w-6 place-items-center rounded-md bg-navy text-[11px] text-white">
-            ▲
+          <span className="grid h-6 w-6 place-items-center rounded-md bg-navy">
+            <Coliseum className="h-4 w-4" />
           </span>
           <span className="font-display text-lg text-ink">GTM Arena</span>
         </Link>
