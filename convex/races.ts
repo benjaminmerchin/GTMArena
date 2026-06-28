@@ -116,6 +116,77 @@ export const createRace = mutation({
   },
 });
 
+// Ingest REAL enrichment output (e.g. from an actual `npx orangeslice@latest`
+// run or the Fiber AI API) as a graded race. Paste provider rows and they're
+// scored against each other on the same objective grader as a simulated race.
+export const ingestRace = mutation({
+  args: {
+    name: v.optional(v.string()),
+    requestedFields: v.optional(v.array(v.string())),
+    leads: v.array(leadValidator),
+    results: v.array(
+      v.object({
+        providerSlug: v.string(),
+        leadId: v.string(),
+        fields: fieldsValidator,
+        cost: v.optional(v.number()),
+        latencyMs: v.optional(v.number()),
+      }),
+    ),
+  },
+  handler: async (ctx, args) => {
+    const requestedFields = args.requestedFields ?? DEFAULT_FIELDS;
+    const slugToId: Record<string, Id<"tools">> = {};
+    const providerIds: Id<"tools">[] = [];
+    for (const slug of [...new Set(args.results.map((r) => r.providerSlug))]) {
+      const t = await ctx.db
+        .query("tools")
+        .withIndex("by_slug", (q) => q.eq("slug", slug))
+        .unique();
+      if (t) {
+        slugToId[slug] = t._id;
+        providerIds.push(t._id);
+      }
+    }
+
+    const raceId = await ctx.db.insert("races", {
+      category: "enrichment",
+      name: args.name ?? "Ingested real run",
+      leads: args.leads,
+      providerToolIds: providerIds,
+      requestedFields,
+      status: "running",
+      createdAt: Date.now(),
+    });
+
+    for (const r of args.results) {
+      const toolId = slugToId[r.providerSlug];
+      if (!toolId) continue;
+      const got = requestedFields.filter((f) => (r.fields as any)[f] != null).length;
+      await ctx.db.insert("raceCells", {
+        raceId,
+        leadId: r.leadId,
+        toolId,
+        status: "filled",
+        fields: r.fields,
+        coverage: requestedFields.length ? got / requestedFields.length : 0,
+        cost: r.cost ?? 0,
+        latencyMs: r.latencyMs ?? 0,
+        filledAt: Date.now(),
+      });
+    }
+
+    const cells = await ctx.db
+      .query("raceCells")
+      .withIndex("by_race", (q) => q.eq("raceId", raceId))
+      .collect();
+    await ctx.db.patch(raceId, { status: "done" });
+    const race = (await ctx.db.get(raceId))!;
+    await applyRaceResult(ctx, race, cells);
+    return { raceId };
+  },
+});
+
 // ── live fill pipeline (internal) ───────────────────────────────────────────
 export const cellContext = internalQuery({
   args: { cellId: v.id("raceCells") },

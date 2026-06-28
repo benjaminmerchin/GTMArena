@@ -13,15 +13,19 @@ export const submit = mutation({
     email: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    const email = args.email ?? identity?.email;
     const id = await ctx.db.insert("submissions", {
       ...args,
+      submittedBy: identity?.subject ?? args.submittedBy,
+      email,
       status: "pending",
       createdAt: Date.now(),
     });
     // Fire a confirmation email if Resend is configured (no-op otherwise).
-    if (args.email) {
+    if (email) {
       await ctx.scheduler.runAfter(0, internal.email.sendSubmissionReceipt, {
-        email: args.email,
+        email,
         name: args.name,
       });
     }

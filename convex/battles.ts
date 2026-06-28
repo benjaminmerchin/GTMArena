@@ -127,6 +127,12 @@ export const castVote = mutation({
     const battle = await ctx.db.get(args.battleId);
     if (!battle) throw new Error("Battle not found");
 
+    // Identity-aware: when the request is authenticated (e.g. Better Auth on the
+    // frontend), attribute the vote to that user; otherwise fall back to the
+    // anonymous session id the client passes.
+    const identity = await ctx.auth.getUserIdentity();
+    const voterId = identity?.subject ?? args.voterId;
+
     const [A, B] = battle.contestants;
     const scoreA =
       args.result === "A" ? 1 : args.result === "B" ? 0 : 0.5;
@@ -135,7 +141,7 @@ export const castVote = mutation({
       battleId: args.battleId,
       category: battle.category,
       result: args.result,
-      voterId: args.voterId,
+      voterId,
       judgeType: args.judgeType ?? "human",
       judgeModel: args.judgeModel,
       createdAt: Date.now(),
