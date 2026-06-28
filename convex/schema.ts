@@ -169,6 +169,8 @@ export default defineSchema({
         company: v.optional(v.string()),
         domain: v.optional(v.string()),
         title: v.optional(v.string()),
+        linkedin: v.optional(v.string()),
+        email: v.optional(v.string()),
       }),
     ),
     providerToolIds: v.array(v.id("tools")),

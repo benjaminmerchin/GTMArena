@@ -27,6 +27,8 @@ const leadValidator = v.object({
   company: v.optional(v.string()),
   domain: v.optional(v.string()),
   title: v.optional(v.string()),
+  linkedin: v.optional(v.string()),
+  email: v.optional(v.string()),
 });
 
 const fieldsValidator = v.object({
