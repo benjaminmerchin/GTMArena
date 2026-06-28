@@ -30,54 +30,52 @@ export default function RacePage() {
     cells.find((c: any) => c.leadId === leadId && c.toolId === toolId);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
+      <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">
-            Enrichment Arena
-          </h1>
-          <p className="mt-1 max-w-2xl text-ink/50">
+          <div className="text-sm font-medium text-accent">Race · live grader</div>
+          <h1 className="mt-1 font-display text-4xl text-ink">Enrichment Arena</h1>
+          <p className="mt-2 max-w-2xl text-ink/55">
             Drop a lead list → providers fill columns live → an objective grader
             scores email validity, coverage &amp; cost-per-valid.
           </p>
         </div>
-        <button onClick={start} disabled={busy} className="btn-accent">
+        <button onClick={start} disabled={busy} className="btn-navy">
           <Zap size={16} /> {raceId ? "New race" : "Run race"}
         </button>
       </div>
 
       {!raceId && (
-        <div className="surface p-12 text-center text-ink/45">
-          Press <b className="text-ink/80">Run race</b> to bake off the top
+        <div className="surface mt-8 p-14 text-center text-ink/50">
+          Press <b className="text-ink">Run race</b> to bake off the top
           enrichment providers on a law-firm lead list.
         </div>
       )}
 
       {providers.length > 0 && (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {providers.map((p: any, i: number) => (
             <div
               key={p.toolId}
-              className="surface relative overflow-hidden p-4"
-              style={{ borderTopColor: CONTESTANT[i], borderTopWidth: 2 }}
+              className="surface overflow-hidden p-5"
+              style={{ borderTopColor: CONTESTANT[i], borderTopWidth: 3 }}
             >
               <div className="flex items-center justify-between">
-                <span className="font-display font-semibold">{p.name}</span>
+                <span className="font-semibold text-ink">{p.name}</span>
                 <span className="text-xs tabular-nums text-ink/40">
                   {p.filled}/{p.total}
                 </span>
               </div>
-              <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#EEF1F6]">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
                     width: `${(p.filled / Math.max(p.total, 1)) * 100}%`,
                     background: CONTESTANT[i],
-                    boxShadow: `0 0 12px ${CONTESTANT[i]}80`,
                   }}
                 />
               </div>
-              <dl className="mt-3.5 space-y-1.5 text-sm">
+              <dl className="mt-4 space-y-2 text-sm">
                 <Row k="Email valid" v={fmtPct(p.emailValidity)} accent />
                 <Row k="Coverage" v={fmtPct(p.coverage)} />
                 <Row
@@ -92,15 +90,15 @@ export default function RacePage() {
       )}
 
       {leads.length > 0 && (
-        <div className="surface overflow-x-auto">
+        <div className="surface mt-6 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06] text-left text-[11px] uppercase tracking-wide text-ink/35">
-                <th className="px-3 py-2.5 font-medium">Lead</th>
+              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-ink/40">
+                <th className="px-4 py-3 font-semibold">Lead</th>
                 {providers.map((p: any, i: number) => (
                   <th
                     key={p.toolId}
-                    className="px-3 py-2.5 font-semibold"
+                    className="px-4 py-3 font-semibold"
                     style={{ color: CONTESTANT[i] }}
                   >
                     {p.name}
@@ -110,37 +108,37 @@ export default function RacePage() {
             </thead>
             <tbody>
               {leads.map((l: any) => (
-                <tr key={l.id} className="border-b border-white/[0.05] last:border-0">
-                  <td className="px-3 py-2.5 align-top">
-                    <div className="font-medium">{l.name}</div>
-                    <div className="text-xs text-ink/35">{l.company}</div>
+                <tr key={l.id} className="border-b border-line last:border-0">
+                  <td className="px-4 py-3 align-top">
+                    <div className="font-medium text-ink">{l.name}</div>
+                    <div className="text-xs text-ink/40">{l.company}</div>
                   </td>
                   {providers.map((p: any) => {
                     const c = cellOf(l.id, p.toolId);
                     return (
-                      <td key={p.toolId} className="px-3 py-2.5 align-top">
+                      <td key={p.toolId} className="px-4 py-3 align-top">
                         {!c || c.status === "pending" ? (
-                          <span className="text-ink/20">·</span>
+                          <span className="text-ink/25">·</span>
                         ) : c.status === "running" ? (
-                          <span className="inline-block h-3 w-3 animate-pulse rounded-full bg-mustard" />
+                          <span className="inline-block h-3 w-3 animate-pulse rounded-full bg-c2" />
                         ) : (
                           <div>
-                            <div className="flex items-center gap-1">
-                              <span className="max-w-[170px] truncate text-ink/75">
+                            <div className="flex items-center gap-1.5">
+                              <span className="max-w-[180px] truncate text-ink/75">
                                 {c.fields?.email ?? "—"}
                               </span>
                               {c.fields?.email &&
                                 (c.fields?.emailValid ? (
-                                  <span title="valid" className="text-chartreuse">
+                                  <span title="valid" className="font-semibold text-c1">
                                     ✓
                                   </span>
                                 ) : (
-                                  <span title="risky" className="text-terracotta">
+                                  <span title="risky" className="font-semibold text-c3">
                                     !
                                   </span>
                                 ))}
                             </div>
-                            <div className="text-[11px] tabular-nums text-ink/30">
+                            <div className="text-[11px] tabular-nums text-ink/35">
                               {fmtPct(c.coverage)} cov
                               {c.cost != null && ` · $${c.cost.toFixed(3)}`}
                             </div>
@@ -157,7 +155,7 @@ export default function RacePage() {
       )}
 
       {race?.status === "done" && (
-        <div className="text-center text-sm font-medium text-coral">
+        <div className="mt-6 text-center text-sm font-medium text-accent">
           Race complete — results rolled into the enrichment leaderboard.
         </div>
       )}
@@ -167,7 +165,9 @@ export default function RacePage() {
 
 const Row = ({ k, v, accent }: { k: string; v: string; accent?: boolean }) => (
   <div className="flex justify-between">
-    <dt className="text-ink/40">{k}</dt>
-    <dd className={`font-medium tabular-nums ${accent ? "text-coral" : "text-ink/85"}`}>{v}</dd>
+    <dt className="text-ink/45">{k}</dt>
+    <dd className={`font-semibold tabular-nums ${accent ? "text-accent" : "text-ink/85"}`}>
+      {v}
+    </dd>
   </div>
 );

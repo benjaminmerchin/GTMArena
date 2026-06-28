@@ -5,10 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Contestant identity colors — magenta, chartreuse, terracotta, mustard.
-// Brightened for legibility on the dark theme; used ONLY as identity + chart
-// marks (per the kernel), never as decoration.
-export const CONTESTANT = ["#F2589B", "#DCE34F", "#E2895F", "#FACF39"];
+// Contestant identity colors — distinct on white, clear of the navy brand.
+export const CONTESTANT = ["#0CA678", "#F59F00", "#E64980", "#7048E8"];
 
 export const SORTS = [
   { key: "quality", label: "Quality" },
@@ -27,6 +25,15 @@ export const SEGMENTS = [
   { key: "us", label: "US" },
   { key: "eu", label: "EU" },
   { key: "global", label: "Global" },
+];
+
+// Category nav metadata (lucide icon names resolved in client components).
+export const CATEGORY_META = [
+  { key: "cold-email", name: "Cold Email", icon: "Mail" },
+  { key: "enrichment", name: "Enrichment", icon: "Sparkles" },
+  { key: "email-context", name: "Email Context", icon: "Search" },
+  { key: "parallel-dialer", name: "Parallel Dialer", icon: "Phone" },
+  { key: "scraping", name: "Scraping", icon: "Globe" },
 ];
 
 export const fmtSpeed = (ms?: number | null) =>

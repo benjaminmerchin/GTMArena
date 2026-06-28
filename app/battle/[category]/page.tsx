@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn, CONTESTANT } from "@/lib/ui";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 type Battle = {
   battleId: string;
@@ -72,66 +72,64 @@ export default function BattlePage() {
   const winnerName = reveal?.reveal.find((r: any) => r.label === reveal.result)?.name;
 
   return (
-    <div className="space-y-6">
-      <Link
-        href={`/c/${category}`}
-        className="inline-flex items-center gap-1.5 text-sm text-ink/45 transition hover:text-ink"
-      >
-        <ArrowLeft size={14} /> {category.replace("-", " ")} leaderboard
-      </Link>
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl font-semibold capitalize tracking-tight">
-          {category.replace("-", " ")} battle
-        </h1>
-        <button onClick={llmJudge} disabled={busy || judging} className="btn-ghost">
-          <Sparkles size={15} className="text-coral" />
+    <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <Link
+            href={`/c/${category}`}
+            className="text-sm font-medium text-accent hover:underline"
+          >
+            ← {category.replace("-", " ")} leaderboard
+          </Link>
+          <h1 className="mt-1 font-display text-4xl capitalize text-ink">
+            {category.replace("-", " ")} battle
+          </h1>
+        </div>
+        <button onClick={llmJudge} disabled={busy || judging} className="btn-soft">
+          <Sparkles size={15} className="text-accent" />
           {judging ? "LLM judging…" : "Let an LLM judge"}
         </button>
       </div>
 
       {battle && (
-        <div className="surface p-4">
-          <div className="text-[11px] font-medium uppercase tracking-wide text-ink/35">
+        <div className="surface mt-8 p-5">
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-ink/40">
             Shared task
           </div>
-          <p className="mt-1 text-sm text-ink/80">{battle.task}</p>
+          <p className="mt-1.5 text-[15px] text-ink/80">{battle.task}</p>
         </div>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
         {battle?.contestants.map((c, i) => {
           const rev = reveal?.reveal.find((r: any) => r.label === c.label);
           const won = reveal && reveal.result === c.label;
           return (
             <div
               key={c.label}
-              className={cn(
-                "surface flex flex-col p-4 transition",
-                won && "shadow-glow",
-              )}
+              className={cn("surface flex flex-col p-5 transition")}
               style={{
                 borderColor: reveal ? CONTESTANT[i] : undefined,
-                boxShadow: won ? "0 0 36px -10px rgba(255,111,97,0.55)" : undefined,
+                boxShadow: won ? "0 0 0 2px #2F6FED, 0 16px 40px -16px #2f6fed55" : undefined,
               }}
             >
               <div className="mb-3 flex items-center justify-between">
-                <span className="flex items-center gap-2 text-sm font-semibold">
+                <span className="flex items-center gap-2.5 text-sm font-semibold">
                   <span
-                    className="grid h-6 w-6 place-items-center rounded-md text-[12px] font-bold text-black"
-                    style={{ background: reveal ? CONTESTANT[i] : "rgba(255,255,255,0.12)" }}
+                    className="grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold text-white"
+                    style={{ background: reveal ? CONTESTANT[i] : "#0B1F3A" }}
                   >
                     {c.label}
                   </span>
                   {rev ? (
-                    <Link href={`/tool/${rev.slug}`} className="hover:text-coral">
+                    <Link href={`/tool/${rev.slug}`} className="text-ink hover:text-accent">
                       {rev.name}
                     </Link>
                   ) : (
                     <span className="text-ink/55">Anonymous</span>
                   )}
                   {won && (
-                    <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[10px] font-semibold text-coral">
+                    <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent">
                       WINNER
                     </span>
                   )}
@@ -145,12 +143,12 @@ export default function BattlePage() {
           );
         })}
         {!battle && (
-          <div className="p-10 text-center text-ink/35 md:col-span-2">Loading battle…</div>
+          <div className="p-12 text-center text-ink/40 md:col-span-2">Loading battle…</div>
         )}
       </div>
 
       {battle && !reveal && (
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
           <VoteBtn onClick={() => castVote("A")} disabled={busy}>← A better</VoteBtn>
           <VoteBtn onClick={() => castVote("tie")} disabled={busy}>Tie</VoteBtn>
           <VoteBtn onClick={() => castVote("bothBad")} disabled={busy}>Both bad</VoteBtn>
@@ -159,15 +157,15 @@ export default function BattlePage() {
       )}
 
       {reveal && (
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <span className="text-sm text-ink/50">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <span className="text-sm text-ink/55">
             {reveal.result === "tie"
               ? "Tie."
               : reveal.result === "bothBad"
                 ? "Both bad."
                 : `${winnerName} wins.`}
           </span>
-          <button onClick={load} className="btn-accent">
+          <button onClick={load} className="btn-navy">
             Next battle →
           </button>
         </div>
@@ -189,7 +187,7 @@ function VoteBtn({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium transition hover:border-coral hover:bg-white/[0.05] disabled:opacity-50"
+      className="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink transition hover:border-navy hover:bg-[#F6F8FB] disabled:opacity-50"
     >
       {children}
     </button>

@@ -1,27 +1,30 @@
 import type { Config } from "tailwindcss";
 
-// Modern dark theme. Coral stays the single dominant accent; the four warms are
-// brightened for legibility on black and used only as contestant identity marks.
+// Clean navy-on-white theme (arena.ai / designarena.ai inspired).
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        bg: "#08090B",
-        ink: "#ECEDF0",
-        coral: "#FF6F61",
-        magenta: "#F2589B",
-        chartreuse: "#DCE34F",
-        terracotta: "#E2895F",
-        mustard: "#FACF39",
+        bg: "#FFFFFF",
+        ink: "#0B1F3A", // deep navy — primary text & headings
+        navy: "#0A2540", // brand / primary buttons
+        accent: "#2F6FED", // interactive blue
+        line: "#E6EAF1", // hairline borders
+        // contestant identity marks — distinct on white, away from the navy brand
+        c1: "#0CA678", // teal
+        c2: "#F59F00", // amber
+        c3: "#E64980", // pink
+        c4: "#7048E8", // violet
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "var(--font-sans)", "ui-sans-serif", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "ui-serif", "serif"],
       },
       boxShadow: {
-        glow: "0 0 36px -10px rgba(255,111,97,0.55)",
-        "glow-sm": "0 0 0 1px rgba(255,111,97,0.25), 0 8px 30px -12px rgba(255,111,97,0.45)",
+        card: "0 1px 2px #0b1f3a0a, 0 10px 30px -14px #0b1f3a1f",
+        "card-hover": "0 2px 6px #0b1f3a12, 0 16px 40px -16px #0b1f3a2b",
+        navy: "0 8px 24px -10px #0a254066",
       },
     },
   },
