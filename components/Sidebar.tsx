@@ -31,6 +31,12 @@ export function Sidebar() {
           <Zap size={16} /> Enrichment Race
         </Link>
         <Link
+          href="/race/live"
+          className={cn("sidebar-link", path === "/race/live" && "sidebar-link-active")}
+        >
+          <Radar size={16} /> Live Enrichment
+        </Link>
+        <Link
           href="/leaderboards"
           className={cn("sidebar-link", path === "/leaderboards" && "sidebar-link-active")}
         >
