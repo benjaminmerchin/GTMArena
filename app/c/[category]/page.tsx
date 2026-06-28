@@ -39,51 +39,10 @@ export default function CategoryPage() {
           ))}
       </div>
 
-      {/* AI ranking — the curation layer */}
-      <div className="surface mt-8 overflow-hidden">
-        <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-          <div className="flex items-center gap-2 text-sm font-medium text-ink">
-            <Sparkles size={15} className="text-accent" /> AI ranking
-          </div>
-          <div className="text-xs text-ink/40">ranked by {ranking?.model ?? "gpt-5.5"}</div>
-        </div>
-        {ranking?.entries?.map((e: any) => (
-          <Link
-            key={e.slug}
-            href={`/tool/${e.slug}`}
-            className="flex items-start gap-3.5 border-b border-line px-5 py-4 transition last:border-0 hover:bg-ink/[0.03]"
-          >
-            <span
-              className={cn(
-                "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md text-[11px] font-bold",
-                e.rank === 1 ? "bg-brand text-white" : "bg-ink/[0.06] text-ink/60",
-              )}
-            >
-              {e.rank}
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-ink">{e.name}</span>
-                {e.freeTier && (
-                  <span className="rounded-full bg-c1/15 px-1.5 py-0.5 text-[10px] font-medium text-c1">
-                    free
-                  </span>
-                )}
-              </div>
-              <p className="mt-1 text-sm leading-relaxed text-ink/55">{e.rationale}</p>
-            </div>
-            <span className="shrink-0 text-sm font-semibold tabular-nums text-accent">
-              {e.score}
-            </span>
-          </Link>
-        ))}
-        {!ranking && <div className="p-6 text-sm text-ink/40">No AI ranking yet.</div>}
+      {/* Elo ranking — the unbiased blind-battle evidence (primary) */}
+      <div className="mb-3 mt-8 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink/40">
+        <Swords size={14} className="text-accent" /> Elo ranking · blind battles
       </div>
-
-      {/* arena signals — the evidence the ranking is grounded in */}
-      <h2 className="mb-3 mt-12 text-sm font-semibold uppercase tracking-wide text-ink/40">
-        Arena signals
-      </h2>
       <div className="flex flex-wrap items-center gap-2.5">
         {sorts.map((s) => (
           <button
@@ -165,6 +124,47 @@ export default function CategoryPage() {
           </Link>
         ))}
         {!rows && <div className="p-8 text-sm text-ink/40">Loading…</div>}
+      </div>
+
+      {/* AI ranking — the curation layer on top of the Elo evidence */}
+      <div className="surface mt-12 overflow-hidden">
+        <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
+          <div className="flex items-center gap-2 text-sm font-medium text-ink">
+            <Sparkles size={15} className="text-accent" /> AI ranking
+          </div>
+          <div className="text-xs text-ink/40">ranked by {ranking?.model ?? "gpt-5.5"}</div>
+        </div>
+        {ranking?.entries?.map((e: any) => (
+          <Link
+            key={e.slug}
+            href={`/tool/${e.slug}`}
+            className="flex items-start gap-3.5 border-b border-line px-5 py-4 transition last:border-0 hover:bg-ink/[0.03]"
+          >
+            <span
+              className={cn(
+                "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md text-[11px] font-bold",
+                e.rank === 1 ? "bg-brand text-white" : "bg-ink/[0.06] text-ink/60",
+              )}
+            >
+              {e.rank}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-ink">{e.name}</span>
+                {e.freeTier && (
+                  <span className="rounded-full bg-c1/15 px-1.5 py-0.5 text-[10px] font-medium text-c1">
+                    free
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-sm leading-relaxed text-ink/55">{e.rationale}</p>
+            </div>
+            <span className="shrink-0 text-sm font-semibold tabular-nums text-accent">
+              {e.score}
+            </span>
+          </Link>
+        ))}
+        {!ranking && <div className="p-6 text-sm text-ink/40">No AI ranking yet.</div>}
       </div>
     </div>
   );
