@@ -16,6 +16,8 @@ export type Lead = {
   company?: string;
   domain?: string;
   title?: string;
+  linkedin?: string;
+  email?: string;
 };
 
 export type EnrichFields = {
@@ -133,63 +135,188 @@ export function simulateEnrich(
   };
 }
 
-// ── real provider seam (configure keys in Convex env to enable) ─────────────
+// ── real providers (live APIs; keys set in the Convex deployment env) ───────
 
+function splitName(name?: string): { first: string; last: string } {
+  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  return {
+    first: parts[0] ?? "",
+    last: parts.length > 1 ? parts.slice(1).join(" ") : (parts[0] ?? ""),
+  };
+}
+
+function pack(
+  out: EnrichFields,
+  fields: RequestedField[],
+  cost: number,
+  started: number,
+): EnrichResult {
+  const got = fields.filter((f) => (out as any)[f] != null).length;
+  return {
+    fields: out,
+    coverage: fields.length ? got / fields.length : 0,
+    cost,
+    latencyMs: Date.now() - started,
+    source: "real",
+  };
+}
+
+// Hunter — email-finder (returns email + confidence score + title + LinkedIn).
+async function hunterEnrich(lead: Lead, fields: RequestedField[]): Promise<EnrichResult> {
+  const key = process.env.HUNTER_API_KEY;
+  const started = Date.now();
+  const out: EnrichFields = {};
+  const { first, last } = splitName(lead.name);
+  if (key && first && last) {
+    try {
+      const q = new URLSearchParams({ first_name: first, last_name: last, api_key: key });
+      if (lead.domain) q.set("domain", lead.domain);
+      else if (lead.company) q.set("company", lead.company);
+      const res = await fetch(`https://api.hunter.io/v2/email-finder?${q}`);
+      if (res.ok) {
+        const x: any = (await res.json())?.data ?? {};
+        if (x.email) {
+          out.email = x.email;
+          out.emailValid = x.score != null ? x.score >= 80 : x.verification?.status === "valid";
+        }
+        if (x.position) out.title = x.position;
+        if (x.linkedin_url) out.linkedin = x.linkedin_url;
+      } else console.error("[hunter]", res.status, await res.text());
+    } catch (e) {
+      console.error("[hunter]", e);
+    }
+  }
+  return pack(out, fields, 0.02, started);
+}
+
+// Prospeo — enrich-person (verified work email + title + LinkedIn).
+async function prospeoEnrich(lead: Lead, fields: RequestedField[]): Promise<EnrichResult> {
+  const key = process.env.PROSPEO_API_KEY;
+  const started = Date.now();
+  const out: EnrichFields = {};
+  const { first, last } = splitName(lead.name);
+  if (key && first && last && (lead.company || lead.domain)) {
+    try {
+      const company = lead.domain
+        ? { company_website: lead.domain }
+        : { company_name: lead.company };
+      const res = await fetch("https://api.prospeo.io/enrich-person", {
+        method: "POST",
+        headers: { "X-KEY": key, "Content-Type": "application/json" },
+        body: JSON.stringify({ data: { first_name: first, last_name: last, ...company } }),
+      });
+      const data: any = await res.json();
+      if (!data.error && data.person) {
+        const em = data.person.email ?? {};
+        if (em.email) {
+          out.email = em.email;
+          out.emailValid = em.status === "VERIFIED" || em.status === "VALID";
+        }
+        if (data.person.job_title) out.title = data.person.job_title;
+        if (data.person.linkedin_url) out.linkedin = data.person.linkedin_url;
+      }
+    } catch (e) {
+      console.error("[prospeo]", e);
+    }
+  }
+  return pack(out, fields, 0.03, started);
+}
+
+// People Data Labs — person enrich (title + LinkedIn; work email on paid plans).
+async function pdlEnrich(lead: Lead, fields: RequestedField[]): Promise<EnrichResult> {
+  const key = process.env.PDL_API_KEY;
+  const started = Date.now();
+  const out: EnrichFields = {};
+  const { first, last } = splitName(lead.name);
+  if (key && first && last && (lead.company || lead.domain)) {
+    try {
+      const q = new URLSearchParams({
+        first_name: first,
+        last_name: last,
+        company: lead.domain ?? lead.company ?? "",
+        min_likelihood: "2",
+        api_key: key,
+      });
+      const res = await fetch(`https://api.peopledatalabs.com/v5/person/enrich?${q}`);
+      const data: any = await res.json();
+      if (data.status === 200) {
+        const x = data.data ?? {};
+        if (typeof x.work_email === "string") {
+          out.email = x.work_email;
+          out.emailValid = true;
+        }
+        if (x.job_title) out.title = x.job_title;
+        if (x.linkedin_url)
+          out.linkedin = x.linkedin_url.startsWith("http") ? x.linkedin_url : `https://${x.linkedin_url}`;
+      }
+    } catch (e) {
+      console.error("[pdl]", e);
+    }
+  }
+  return pack(out, fields, 0.01, started);
+}
+
+// Fiber AI — turbo-enrich (best-effort; identifier = LinkedIn / email / domain).
+async function fiberEnrich(lead: Lead, fields: RequestedField[]): Promise<EnrichResult> {
+  const key = process.env.FIBER_API_KEY;
+  const started = Date.now();
+  const out: EnrichFields = {};
+  const identifier = lead.linkedin ?? lead.email ?? lead.domain ?? lead.company;
+  if (key && identifier) {
+    try {
+      const res = await fetch("https://api.fiber.ai/v1/contacts/turbo-enrich", {
+        method: "POST",
+        headers: { "x-api-key": key, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier,
+          linkedinUrl: lead.linkedin,
+          email: lead.email,
+          domain: lead.domain,
+          name: lead.name,
+          company: lead.company,
+        }),
+      });
+      if (res.ok) {
+        const data: any = await res.json();
+        const c = data.contact ?? data.data ?? data ?? {};
+        if (c.email) {
+          out.email = c.email;
+          out.emailValid =
+            c.emailValidity === true || c.emailValidity === "valid" || c.emailStatus === "valid";
+        }
+        if (c.title) out.title = c.title;
+        if (c.linkedinUrl ?? c.linkedin) out.linkedin = c.linkedinUrl ?? c.linkedin;
+      } else console.error("[fiber]", res.status, await res.text());
+    } catch (e) {
+      console.error("[fiber]", e);
+    }
+  }
+  return pack(out, fields, 0.04, started);
+}
+
+// Dispatch to the live provider by slug. Returns null for tools with no real
+// adapter (the caller then knows there's no real data for that provider).
 export async function realEnrich(
   p: ProviderProfile,
   lead: Lead,
   fields: RequestedField[],
 ): Promise<EnrichResult | null> {
-  // Fiber AI GTM data API. Set FIBER_API_KEY in the Convex deployment env.
-  // Endpoint shape is best-effort; falls back to the simulator on any miss.
-  const fiberKey = process.env.FIBER_API_KEY;
-  if (p.slug === "fiber-ai" && fiberKey) {
-    try {
-      const started = Date.now();
-      const res = await fetch("https://api.fiber.ai/v1/enrich", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${fiberKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: lead.name,
-          company: lead.company,
-          domain: lead.domain,
-          fields,
-        }),
-      });
-      if (!res.ok) return null;
-      const data: any = await res.json();
-      const out: EnrichFields = {
-        email: data.email ?? undefined,
-        emailValid: data.email_status
-          ? data.email_status === "valid"
-          : data.email
-            ? true
-            : undefined,
-        phone: data.phone ?? undefined,
-        title: data.title ?? undefined,
-        linkedin: data.linkedin_url ?? undefined,
-      };
-      const got = fields.filter((f) => (out as any)[f] != null).length;
-      return {
-        fields: out,
-        coverage: fields.length ? got / fields.length : 0,
-        cost: typeof data.cost === "number" ? data.cost : p.costPerRecord,
-        latencyMs: Date.now() - started,
-        source: "real",
-      };
-    } catch {
+  switch (p.slug) {
+    case "hunter":
+      return hunterEnrich(lead, fields);
+    case "prospeo":
+      return prospeoEnrich(lead, fields);
+    case "people-data-labs":
+      return pdlEnrich(lead, fields);
+    case "fiber-ai":
+      return fiberEnrich(lead, fields);
+    default:
       return null;
-    }
   }
-
-  // Orange Slice is a Claude-Code toolkit (npx orangeslice@latest), driven at
-  // build time rather than via a server HTTP API, so there's no runtime seam
-  // here — its results are produced through the agent toolkit and ingested.
-  return null;
 }
+
+// The four providers wired for the live race.
+export const REAL_PROVIDERS = ["hunter", "prospeo", "people-data-labs", "fiber-ai"];
 
 // A built-in law-firm lead list for the demo race (per the kernel brief).
 export const DEFAULT_LEADS: Lead[] = [

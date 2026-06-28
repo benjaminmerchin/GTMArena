@@ -241,8 +241,27 @@ export const runCell = internalAction({
     if (!cxt) return;
 
     let result: EnrichResult | null = null;
-    if (useReal) result = await realEnrich(cxt.profile, cxt.lead, cxt.requestedFields);
-    if (!result) result = simulateEnrich(cxt.profile, cxt.lead, cxt.requestedFields);
+    if (useReal) {
+      // Cache real results per (provider, person) so re-runs don't re-burn credits.
+      const key = `${cxt.profile.slug}|${(cxt.lead.name ?? "").trim().toLowerCase()}|${(cxt.lead.company ?? "").trim().toLowerCase()}`;
+      const cached = await ctx.runQuery(internal.races.getCache, { key });
+      if (cached) {
+        result = { ...cached, source: "real" };
+      } else {
+        result = await realEnrich(cxt.profile, cxt.lead, cxt.requestedFields);
+        // Real mode never falls back to the simulator — an empty result is honest.
+        if (!result) result = { fields: {}, coverage: 0, cost: 0, latencyMs: 0, source: "real" };
+        await ctx.runMutation(internal.races.putCache, {
+          key,
+          fields: result.fields,
+          coverage: result.coverage,
+          cost: result.cost,
+          latencyMs: result.latencyMs,
+        });
+      }
+    } else {
+      result = simulateEnrich(cxt.profile, cxt.lead, cxt.requestedFields);
+    }
 
     await ctx.runMutation(internal.races.commitCell, {
       cellId,
@@ -287,6 +306,44 @@ export const commitCell = internalMutation({
         await applyRaceResult(ctx, race, cells);
       }
     }
+  },
+});
+
+// ── real-result cache (so re-running the live race never re-burns credits) ──
+export const getCache = internalQuery({
+  args: { key: v.string() },
+  handler: async (ctx, { key }) => {
+    const c = await ctx.db
+      .query("enrichCache")
+      .withIndex("by_key", (q) => q.eq("key", key))
+      .unique();
+    return c
+      ? { fields: c.fields, coverage: c.coverage, cost: c.cost, latencyMs: c.latencyMs }
+      : null;
+  },
+});
+
+export const putCache = internalMutation({
+  args: {
+    key: v.string(),
+    fields: fieldsValidator,
+    coverage: v.number(),
+    cost: v.number(),
+    latencyMs: v.number(),
+  },
+  handler: async (ctx, a) => {
+    const existing = await ctx.db
+      .query("enrichCache")
+      .withIndex("by_key", (q) => q.eq("key", a.key))
+      .unique();
+    if (existing)
+      await ctx.db.patch(existing._id, {
+        fields: a.fields,
+        coverage: a.coverage,
+        cost: a.cost,
+        latencyMs: a.latencyMs,
+      });
+    else await ctx.db.insert("enrichCache", { ...a, createdAt: Date.now() });
   },
 });
 

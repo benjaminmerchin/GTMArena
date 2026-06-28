@@ -298,4 +298,21 @@ export default defineSchema({
     model: v.string(),
     updatedAt: v.number(),
   }).index("by_slug", ["slug"]),
+
+  // Cache of real provider results per (provider, person) so re-running the live
+  // race never re-burns API credits.
+  enrichCache: defineTable({
+    key: v.string(), // `${slug}|${name}|${company}`
+    fields: v.object({
+      email: v.optional(v.string()),
+      emailValid: v.optional(v.boolean()),
+      phone: v.optional(v.string()),
+      title: v.optional(v.string()),
+      linkedin: v.optional(v.string()),
+    }),
+    coverage: v.number(),
+    cost: v.number(),
+    latencyMs: v.number(),
+    createdAt: v.number(),
+  }).index("by_key", ["key"]),
 });
